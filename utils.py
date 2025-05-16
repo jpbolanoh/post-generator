@@ -1,6 +1,5 @@
 import os
 import time
-import inquirer
 from datetime import datetime
 import pandas as pd
 import json
@@ -58,14 +57,12 @@ def prepare_directories():
 
 def ask_boolean(question, default=False):
     """
-    Ask a yes/no question via inquirer.
+    Ask a yes/no question via command line.
     
-    Note: For Streamlit version, this is kept for compatibility but
-    is not used in the UI. Use Streamlit's checkbox or radio instead.
+    Note: Esta versión simplificada no usa inquirer ya que no es necesario en Streamlit.
+    La funcionalidad completa solo está disponible en la versión CLI.
     """
-    questions = [inquirer.Confirm('confirm', message=question, default=default)]
-    answers = inquirer.prompt(questions)
-    return answers['confirm']
+    return default  # En Streamlit siempre usamos los controles de la UI
 
 def count_files_in_directory(directory_path):
     """Count the number of files in a directory."""

@@ -5,10 +5,9 @@ Uses the modern OpenAI Python client directly instead of LangChain.
 
 import os
 from enum import Enum
-import inquirer
+from typing import List, Dict, Any, Optional, Union
 import openai
 from openai import OpenAI
-from typing import List, Dict, Any, Optional, Union
 
 
 class GenerationItemType(Enum):
@@ -29,11 +28,11 @@ class GenerationMode(Enum):
     def to_string(self):
         """Convert enum to display string."""
         if self == GenerationMode.LOW:
-            return "Low quality (fast + cheap)"
+            return "Calidad baja (rápido + económico)"
         if self == GenerationMode.MEDIUM:
-            return "Medium quality (recommended)"
+            return "Calidad media (recomendado)"
         if self == GenerationMode.HIGH:
-            return "High quality (slow + expensive)"
+            return "Calidad alta (lento + costoso)"
 
     @staticmethod
     def get_mode_strings():
@@ -47,11 +46,11 @@ class GenerationMode(Enum):
     @staticmethod
     def from_string(value: str):
         """Convert display string back to enum."""
-        if value == "Low quality (fast + cheap)":
+        if value == "Calidad baja (rápido + económico)" or value == "Low quality (fast + cheap)":
             return GenerationMode.LOW
-        if value == "Medium quality (recommended)":
+        if value == "Calidad media (recomendado)" or value == "Medium quality (recommended)":
             return GenerationMode.MEDIUM
-        if value == "High quality (slow + expensive)":
+        if value == "Calidad alta (lento + costoso)" or value == "High quality (slow + expensive)":
             return GenerationMode.HIGH
 
 
@@ -59,7 +58,6 @@ class LLM:
     """
     LLM service manager that handles model selection and content generation.
     Uses different models based on content type and quality settings.
-    Uses the modern OpenAI Python client.
     """
     
     # Initialize OpenAI client
@@ -73,19 +71,19 @@ class LLM:
     @staticmethod
     def get_model_for_type_and_mode(content_type: GenerationItemType, mode: GenerationMode) -> str:
         """
-        Get the appropriate model name based on content type and quality mode.
+        Obtiene el nombre del modelo apropiado basado en el tipo de contenido y el modo de calidad.
         
         Args:
-            content_type: Type of content being generated
-            mode: Quality mode (LOW, MEDIUM, HIGH)
+            content_type: Tipo de contenido que se está generando
+            mode: Modo de calidad (LOW, MEDIUM, HIGH)
             
         Returns:
-            Model name string
+            Nombre del modelo como cadena de texto
         """
-        # Default fallback model
+        # Modelo de respaldo predeterminado
         model = "gpt-3.5-turbo"
         
-        # For topic generation
+        # Para generación de temas
         if content_type == GenerationItemType.TOPICS:
             if mode == GenerationMode.LOW:
                 model = "gpt-3.5-turbo"
@@ -94,7 +92,7 @@ class LLM:
             else:  # HIGH
                 model = "gpt-4o"
         
-        # For idea generation
+        # Para generación de ideas
         elif content_type == GenerationItemType.IDEAS:
             if mode == GenerationMode.LOW:
                 model = "gpt-3.5-turbo"
@@ -103,7 +101,7 @@ class LLM:
             else:  # HIGH
                 model = "gpt-4o"
         
-        # For post content
+        # Para contenido de publicaciones
         elif content_type == GenerationItemType.POST:
             if mode == GenerationMode.LOW:
                 model = "gpt-3.5-turbo"
@@ -112,17 +110,17 @@ class LLM:
             else:  # HIGH
                 model = "gpt-4o"
         
-        # For image prompt generation
+        # Para generación de prompts de imágenes
         elif content_type == GenerationItemType.IMAGE_PROMPT:
-            # Always use at least GPT-4o mini for image prompts to get good results
+            # Siempre usar al menos GPT-4o mini para prompts de imágenes para obtener buenos resultados
             if mode == GenerationMode.LOW:
                 model = "gpt-4o-mini"
-            else:  # MEDIUM or HIGH
+            else:  # MEDIUM o HIGH
                 model = "gpt-4o"
                 
-        # For direct image generation
+        # Para generación directa de imágenes
         elif content_type == GenerationItemType.IMAGE:
-            model = "gpt-image-1"
+            model = "dall-e-3"
             
         return model
     
@@ -178,14 +176,12 @@ class LLM:
         return MessageResponse(completion.choices[0].message.content)
 
     @staticmethod
-    def request_generation_mode():
-        """Interactive console prompt to select generation mode."""
-        return GenerationMode.from_string(inquirer.prompt([inquirer.List(
-            'generation', 
-            message="Which generation mode will be used?", 
-            choices=GenerationMode.get_mode_strings(), 
-            default=GenerationMode.MEDIUM.to_string()
-        )])['generation'])
+    def request_generation_mode(default=GenerationMode.MEDIUM):
+        """
+        Get generation mode from UI selection (Streamlit version).
+        For the console version, this is replaced with a simplified version.
+        """
+        return default
 
 
 class MessageResponse:
