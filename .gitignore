@@ -1,0 +1,8 @@
+results/*
+cache/*
+.vscode
+__pycache__
+# Virtual environments
+env/
+venv/
+ENV/
