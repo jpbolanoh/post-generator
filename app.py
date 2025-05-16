@@ -25,7 +25,7 @@ from brands import Brand
 from llm import GenerationMode
 
 # Configuración de la página
-st.set_page_config(page_title="Social-GPT", page_icon="🚀", layout="wide")
+st.set_page_config(page_title="Galileo", page_icon="", layout="wide")
 prepare_directories()
 
 def display_image(image_path):
@@ -40,7 +40,7 @@ def display_image(image_path):
 
 def main():
     # Añadimos título y descripción
-    st.title("Social-GPT 🚀")
+    st.title("Post Generator")
     st.subheader("Generador de Contenido para Redes Sociales Impulsado por IA")
     
     # Obtener la API key desde el archivo .env
